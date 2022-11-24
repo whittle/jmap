@@ -6,12 +6,9 @@ import           Data.Text.Arbitrary ()
 import           Generic.Random
 import           JMAP.Types.Session
 import           Test.QuickCheck
+import           Test.QuickCheck.Instances.UnorderedContainers ()
 
 instance Arbitrary Session where
-  arbitrary = genericArbitraryU
-  shrink = genericShrink
-
-instance Arbitrary Capabilities where
   arbitrary = genericArbitraryU
   shrink = genericShrink
 

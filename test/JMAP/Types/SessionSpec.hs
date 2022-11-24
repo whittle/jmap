@@ -9,28 +9,96 @@ import qualified Data.Aeson.KeyMap as AK
 import           JMAP.Types.Session
 import           JMAP.Types.Session.Arbitrary ()
 import           Test.Hspec
+import           Test.Hspec.QuickCheck
 import           Test.QuickCheck
 
 spec :: Spec
 spec = do
   describe "Session" $ do
-    describe "ToJSON" $ do
-      it "roundtrips" $ property $ \(s :: Session)
-        -> A.decode (A.encode s) === Just s
+    context "ToJSON" $ do
+      prop "roundtrips" $ \(a :: Session)
+        -> A.decode (A.encode a) === Just a
       it "has the expected keys" $ do
-        s <- generate arbitrary
-        let A.Object o = A.toJSON s
-        (AK.lookup "capabilities" o >>= maybeJSON) `shouldBe` Just (capabilities s)
-        (AK.lookup "accounts" o >>= maybeJSON) `shouldBe` Just (accounts s)
-        (AK.lookup "primaryAccounts" o >>= maybeJSON) `shouldBe` Just (primaryAccounts s)
-        (AK.lookup "username" o >>= maybeJSON) `shouldBe` Just (username s)
-        (AK.lookup "apiUrl" o >>= maybeJSON) `shouldBe` Just (apiUrl s)
-        (AK.lookup "downloadUrl" o >>= maybeJSON) `shouldBe` Just (downloadUrl s)
-        (AK.lookup "uploadUrl" o >>= maybeJSON) `shouldBe` Just (uploadUrl s)
-        (AK.lookup "eventSourceUrl" o >>= maybeJSON) `shouldBe` Just (eventSourceUrl s)
-        (AK.lookup "state" o >>= maybeJSON) `shouldBe` Just (state s)
+        a <- generate arbitrary
+        let A.Object o = A.toJSON a
+        AK.lookup "capabilities" o `shouldBe` Just (A.toJSON $ capabilities a)
+        AK.lookup "accounts" o `shouldBe` Just (A.toJSON $ accounts a)
+        AK.lookup "primaryAccounts" o `shouldBe` Just (A.toJSON $ primaryAccounts a)
+        AK.lookup "username" o `shouldBe` Just (A.toJSON $ username a)
+        AK.lookup "apiUrl" o `shouldBe` Just (A.toJSON $ apiUrl a)
+        AK.lookup "downloadUrl" o `shouldBe` Just (A.toJSON $ downloadUrl a)
+        AK.lookup "uploadUrl" o `shouldBe` Just (A.toJSON $ uploadUrl a)
+        AK.lookup "eventSourceUrl" o `shouldBe` Just (A.toJSON $ eventSourceUrl a)
+        AK.lookup "state" o `shouldBe` Just (A.toJSON $ state a)
 
-maybeJSON :: A.FromJSON a => A.Value -> Maybe a
-maybeJSON v = case A.fromJSON v of
-  A.Error _ -> Nothing
-  A.Success a -> Just a
+-- Example session from Section 2.1:
+--
+-- In the following example Session object, the user has access to
+-- their own mail and contacts via JMAP, as well as read-only access
+-- to shared mail from another user. The server is advertising a
+-- custom "https://example.com/apis/foobar" capability.
+--
+-- {
+--   "capabilities": {
+--     "urn:ietf:params:jmap:core": {
+--       "maxSizeUpload": 50000000,
+--       "maxConcurrentUpload": 8,
+--       "maxSizeRequest": 10000000,
+--       "maxConcurrentRequest": 8,
+--       "maxCallsInRequest": 32,
+--       "maxObjectsInGet": 256,
+--       "maxObjectsInSet": 128,
+--       "collationAlgorithms": [
+--         "i;ascii-numeric",
+--         "i;ascii-casemap",
+--         "i;unicode-casemap"
+--       ]
+--     },
+--     "urn:ietf:params:jmap:mail": {}
+--     "urn:ietf:params:jmap:contacts": {},
+--     "https://example.com/apis/foobar": {
+--       "maxFoosFinangled": 42
+--     }
+--   },
+--   "accounts": {
+--     "A13824": {
+--       "name": "john@example.com",
+--       "isPersonal": true,
+--       "isReadOnly": false,
+--       "accountCapabilities": {
+--         "urn:ietf:params:jmap:mail": {
+--           "maxMailboxesPerEmail": null,
+--           "maxMailboxDepth": 10,
+--           ...
+--         },
+--         "urn:ietf:params:jmap:contacts": {
+--           ...
+--         }
+--       }
+--     },
+--     "A97813": {
+--       "name": "jane@example.com",
+--       "isPersonal": false,
+--       "isReadOnly": true,
+--       "accountCapabilities": {
+--         "urn:ietf:params:jmap:mail": {
+--           "maxMailboxesPerEmail": 1,
+--           "maxMailboxDepth": 10,
+--           ...
+--         }
+--       }
+--     }
+--   },
+--   "primaryAccounts": {
+--     "urn:ietf:params:jmap:mail": "A13824",
+--     "urn:ietf:params:jmap:contacts": "A13824"
+--   },
+--   "username": "john@example.com",
+--   "apiUrl": "https://jmap.example.com/api/",
+--   "downloadUrl": "https://jmap.example.com
+--     /download/{accountId}/{blobId}/{name}?accept={type}",
+--   "uploadUrl": "https://jmap.example.com/upload/{accountId}/",
+--   "eventSourceUrl": "https://jmap.example.com
+--     /eventsource/?types={types}&closeafter={closeafter}&ping={ping}",
+--   "state": "75128aab4b1b"
+-- }

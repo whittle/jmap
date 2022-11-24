@@ -26,11 +26,16 @@ ghc-options:
 library:
   source-dirs: src
   exposed-modules:
+    - JMAP.Server.CoreCapability
+    - JMAP.Types.Base
     - JMAP.Types.Session
   dependencies:
     - base >=4.7 && <5
     - aeson
+    - data-default-class
+    - refined
     - text
+    - unordered-containers
 tests:
   jmap-test:
     main: Spec.hs
@@ -45,6 +50,9 @@ tests:
       - jmap
       - aeson
       - generic-random
+      - ghc
       - hspec
       - QuickCheck
+      - quickcheck-instances
       - quickcheck-text
+      - refined
