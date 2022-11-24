@@ -2,8 +2,7 @@ name: jmap
 version: '0.1.0.0'
 synopsis: An implementation of the JSON Meta Application Protocol
 description: >-
-  Implements JMAP as documented in RFC 8620.
-
+  Implements JMAP as documented in RFC 8620:
   https://www.rfc-editor.org/rfc/rfc8620
 category: Network
 author: Jason Whittle
@@ -27,9 +26,11 @@ ghc-options:
 library:
   source-dirs: src
   exposed-modules:
-    - Data.String.Strip
+    - JMAP.Types.Session
   dependencies:
     - base >=4.7 && <5
+    - aeson
+    - text
 tests:
   jmap-test:
     main: Spec.hs
@@ -42,5 +43,8 @@ tests:
     dependencies:
       - base
       - jmap
+      - aeson
+      - generic-random
       - hspec
       - QuickCheck
+      - quickcheck-text
