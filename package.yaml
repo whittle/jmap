@@ -1,0 +1,46 @@
+name: jmap
+version: '0.1.0.0'
+synopsis: An implementation of the JSON Meta Application Protocol
+description: >-
+  Implements JMAP as documented in RFC 8620.
+
+  https://www.rfc-editor.org/rfc/rfc8620
+category: Network
+author: Jason Whittle
+maintainer: jason.whittle@gmail.com
+copyright: © 2022 Jason A. Whittle
+license: BSD3
+github: whittle/jmap
+extra-source-files:
+  - README.md
+  - CHANGELOG.md
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Widentities
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wmissing-export-lists
+  - -Wmissing-home-modules
+  - -Wpartial-fields
+  - -Wredundant-constraints
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.String.Strip
+  dependencies:
+    - base >=4.7 && <5
+tests:
+  jmap-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+      - -O2
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - base
+      - jmap
+      - hspec
+      - QuickCheck
