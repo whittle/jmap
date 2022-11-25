@@ -6,6 +6,7 @@ module JMAP.Types.SessionSpec (spec) where
 
 import qualified Data.Aeson as A
 import qualified Data.Aeson.KeyMap as AK
+import           GHC.Base (divInt)
 import           JMAP.Types.Session
 import           JMAP.Types.Session.Arbitrary ()
 import           Test.Hspec
@@ -16,7 +17,8 @@ spec :: Spec
 spec = do
   describe "Session" $ do
     context "ToJSON" $ do
-      prop "roundtrips" $ \(a :: Session)
+      modifyMaxSuccess (flip divInt 10) $
+        prop "roundtrips" $ \(a :: Session)
         -> A.decode (A.encode a) === Just a
       it "has the expected keys" $ do
         a <- generate arbitrary
@@ -30,6 +32,18 @@ spec = do
         AK.lookup "uploadUrl" o `shouldBe` Just (A.toJSON $ uploadUrl a)
         AK.lookup "eventSourceUrl" o `shouldBe` Just (A.toJSON $ eventSourceUrl a)
         AK.lookup "state" o `shouldBe` Just (A.toJSON $ state a)
+
+  describe "Account" $ do
+    context "ToJSON" $ do
+      prop "roundtrips" $ \(a :: Account)
+        -> A.decode (A.encode a) === Just a
+      it "has the expected keys" $ do
+        a <- generate arbitrary
+        let A.Object o = A.toJSON a
+        AK.lookup "name" o `shouldBe` Just (A.toJSON $ name a)
+        AK.lookup "isPersonal" o `shouldBe` Just (A.toJSON $ isPersonal a)
+        AK.lookup "isReadOnly" o `shouldBe` Just (A.toJSON $ isReadOnly a)
+        AK.lookup "accountCapabilities" o `shouldBe` Just (A.toJSON $ accountCapabilities a)
 
 -- Example session from Section 2.1:
 --

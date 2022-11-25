@@ -33,6 +33,7 @@ library:
     - base >=4.7 && <5
     - aeson
     - data-default-class
+    - hashable
     - refined
     - text
     - unordered-containers
@@ -56,3 +57,4 @@ tests:
       - quickcheck-instances
       - quickcheck-text
       - refined
+      - text
