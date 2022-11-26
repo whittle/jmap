@@ -7,7 +7,7 @@ module JMAP.Types.Session
   , Account(..)
   ) where
 
-import           Data.Aeson
+import qualified Data.Aeson as A
 import           Data.HashMap.Strict (HashMap)
 import           Data.Text (Text)
 import           GHC.Generics (Generic)
@@ -70,10 +70,10 @@ data Session = Session
     -- removed), so they need to refetch the object.
   } deriving (Eq, Generic, Show)
 
-instance FromJSON Session
+instance A.FromJSON Session
 
-instance ToJSON Session where
-  toEncoding = genericToEncoding defaultOptions
+instance A.ToJSON Session where
+  toEncoding = A.genericToEncoding A.defaultOptions
 
 
 -- | Section 2 gives the type as "String[Object]". Specifications for
@@ -83,7 +83,7 @@ instance ToJSON Session where
 -- identifier for a vendor-specific extension MUST be a URL with a
 -- domain owned by the vendor. Clients MUST opt in to any capability
 -- it wishes to use (see Section 3.3).
-type Capabilities = HashMap URI Value
+type Capabilities = HashMap URI A.Value
 
 
 -- | A map of an account id to an Account object for each account (see
@@ -134,7 +134,7 @@ data Account = Account
     -- Errors", Section 3.6.2).
   } deriving (Eq, Generic, Show)
 
-instance FromJSON Account
+instance A.FromJSON Account
 
-instance ToJSON Account where
-  toEncoding = genericToEncoding defaultOptions
+instance A.ToJSON Account where
+  toEncoding = A.genericToEncoding A.defaultOptions

@@ -28,6 +28,7 @@ library:
   exposed-modules:
     - JMAP.Server.CoreCapability
     - JMAP.Types.Base
+    - JMAP.Types.Request
     - JMAP.Types.Session
   dependencies:
     - base >=4.7 && <5
@@ -37,6 +38,7 @@ library:
     - refined
     - text
     - unordered-containers
+    - vector
 tests:
   jmap-test:
     main: Spec.hs
@@ -58,3 +60,4 @@ tests:
       - quickcheck-text
       - refined
       - text
+      - vector
