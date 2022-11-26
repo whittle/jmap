@@ -12,7 +12,3 @@ import           Test.QuickCheck.Instances.UnorderedContainers ()
 instance Arbitrary Request where
   arbitrary = genericArbitraryU
   shrink = genericShrink
-
-instance Arbitrary Invocation where
-  arbitrary = genericArbitraryU
-  shrink = genericShrink

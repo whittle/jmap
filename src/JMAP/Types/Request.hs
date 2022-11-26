@@ -2,17 +2,12 @@
 
 module JMAP.Types.Request
   ( Request(..)
-  , Invocation(..)
   ) where
 
 import qualified Data.Aeson as A
-import qualified Data.Aeson.Types as AT
-import           Data.Text (Text)
-import qualified Data.Vector as V
 import           Data.HashMap.Strict (HashMap)
 import           GHC.Generics (Generic)
 import           JMAP.Types.Base
-import           Numeric.Natural (Natural)
 
 -- | The Request object as described in Section 3.3.
 data Request = Request
@@ -63,48 +58,3 @@ instance A.FromJSON Request
 
 instance A.ToJSON Request where
   toEncoding = A.genericToEncoding A.defaultOptions
-
-
--- | The Invocation data type as described in Section 3.2. Method
--- calls and responses are represented by the *Invocation* data
--- type. This is a tuple, represented as a JSON array containing three
--- elements:
-data Invocation = Invocation
-  { name :: !Text
-    -- ^ 1. A "String" *name* of the method to call or of the
-    -- response.
-  , arguments :: !A.Value
-    -- ^ 2. A "String[*]" object containing named *arguments* for that
-    -- method or response.
-  , method_call_id :: !Text
-    -- ^ 3. A "String" *method call id*: an arbitrary string from the
-    -- client to be echoed back with the responses emitted by that
-    -- method call (a method may return 1 or more responses, as it may
-    -- make implicit calls to other methods; all responses initiated
-    -- by this method call get the same method call id in the
-    -- response).
-  } deriving (Eq, Generic, Show)
-
-instance A.FromJSON Invocation where
-  parseJSON = A.withArray "Invocation" $ \v -> Invocation
-    <$> parseIndex v 0
-    <*> parseIndex v 1
-    <*> parseIndex v 2
-
-instance A.ToJSON Invocation where
-  toJSON a = A.Array $ flip V.unfoldr (0 :: Natural) $ \i ->
-    case i of
-      0 -> Just (A.toJSON $ name a, 1)
-      1 -> Just (A.toJSON $ arguments a, 2)
-      2 -> Just (A.toJSON $ method_call_id a, 3)
-      _ -> Nothing
-  toEncoding a = A.foldable
-    [ A.toJSON $ name a
-    , A.toJSON $ arguments a
-    , A.toJSON $ method_call_id a
-    ]
-
-parseIndex :: A.FromJSON a => A.Array -> Int -> AT.Parser a
-parseIndex v i = case V.indexM v i of
-  Nothing -> fail $ "index "<>show i<>" not found"
-  Just a -> A.parseJSON a A.<?> AT.Index i

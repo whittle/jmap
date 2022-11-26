@@ -8,6 +8,7 @@ import qualified Data.Aeson as A
 import qualified Data.Aeson.Key as AK
 import qualified Data.Aeson.Types as AT
 import qualified Data.Text as T
+import qualified Data.Vector as V
 import           JMAP.Types.Base
 import           JMAP.Types.Base.Arbitrary ()
 import           Test.Hspec
@@ -88,6 +89,18 @@ spec = do
       it "encodes to a JSON Number" $ do
         a <- generate (arbitrary :: Gen UInt)
         A.toJSON a `shouldSatisfy` isNumber
+
+  describe "Invocation" $ do
+    context "ToJSON" $ do
+      prop "round trips" $ \(a :: Invocation)
+        -> A.decode (A.encode a) === Just a
+      it "encodes as a 3-element JSON Array" $ do
+        a <- generate arbitrary
+        let A.Array v = A.toJSON a
+        V.length v `shouldBe` 3
+        V.unsafeIndex v 0 `shouldBe` A.toJSON (name a)
+        V.unsafeIndex v 1 `shouldBe` A.toJSON (arguments a)
+        V.unsafeIndex v 2 `shouldBe` A.toJSON (method_call_id a)
 
 -- Helpers
 
