@@ -29,6 +29,7 @@ library:
     - JMAP.Server.CoreCapability
     - JMAP.Types.Base
     - JMAP.Types.Request
+    - JMAP.Types.Response
     - JMAP.Types.Session
   dependencies:
     - base >=4.7 && <5

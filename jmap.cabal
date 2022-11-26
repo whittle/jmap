@@ -30,6 +30,7 @@ library
       JMAP.Server.CoreCapability
       JMAP.Types.Base
       JMAP.Types.Request
+      JMAP.Types.Response
       JMAP.Types.Session
   other-modules:
       Paths_jmap
@@ -57,6 +58,8 @@ test-suite jmap-test
       JMAP.Types.BaseSpec
       JMAP.Types.Request.Arbitrary
       JMAP.Types.RequestSpec
+      JMAP.Types.Response.Arbitrary
+      JMAP.Types.ResponseSpec
       JMAP.Types.Session.Arbitrary
       JMAP.Types.SessionSpec
       Paths_jmap

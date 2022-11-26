@@ -20,7 +20,7 @@ data Request = Request
   , methodCalls :: ![Invocation]
     -- ^ An array of method calls to process on the server. The method
     -- calls MUST be processed sequentially, in order.
-  , createdIds :: !(HashMap Id Id)
+  , createdIds :: !(Maybe (HashMap Id Id))
     -- ^ A map of a (client-specified) creation id to the id the
     -- server assigned when a record was successfully created.
     --
