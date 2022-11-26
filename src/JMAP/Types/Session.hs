@@ -5,7 +5,6 @@ module JMAP.Types.Session
   , Capabilities
   , Accounts
   , Account(..)
-  , PrimaryAccounts(..)
   ) where
 
 import           Data.Aeson
@@ -30,7 +29,7 @@ data Session = Session
   , accounts :: !Accounts
     -- ^ A map of an account id to an Account object for each account
     -- (see Section 1.6.2) the user has access to.
-  , primaryAccounts :: !PrimaryAccounts
+  , primaryAccounts :: !(HashMap URI Id)
     -- ^ A map of capability URIs (as found in accountCapabilities) to
     -- the account id that is considered to be the user's main or
     -- default account for data pertaining to that capability. If no
@@ -138,13 +137,4 @@ data Account = Account
 instance FromJSON Account
 
 instance ToJSON Account where
-  toEncoding = genericToEncoding defaultOptions
-
-
-data PrimaryAccounts = PrimaryAccounts
-  deriving (Eq, Generic, Show)
-
-instance FromJSON PrimaryAccounts
-
-instance ToJSON PrimaryAccounts where
   toEncoding = genericToEncoding defaultOptions

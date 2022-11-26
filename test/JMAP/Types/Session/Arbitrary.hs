@@ -16,7 +16,3 @@ instance Arbitrary Session where
 instance Arbitrary Account where
   arbitrary = genericArbitraryU
   shrink = genericShrink
-
-instance Arbitrary PrimaryAccounts where
-  arbitrary = genericArbitraryU
-  shrink = genericShrink
