@@ -9,6 +9,8 @@ import           Data.HashMap.Strict (HashMap)
 import           GHC.Generics (Generic)
 import           JMAP.Types.Base
 
+-- FIXME: Spec demands not just JSON, but I-JSON
+
 -- | The Request object as described in Section 3.3.
 data Request = Request
   { using :: ![URI]

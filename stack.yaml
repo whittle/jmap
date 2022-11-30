@@ -1,3 +1,6 @@
 resolver: lts-20.1
 packages:
   - .
+extra-deps:
+  - git: git@github.com:whittle/http-rfc7807.git
+    commit: 2dcbe9173988d5e284984644d0bd9bcff1d9e83c

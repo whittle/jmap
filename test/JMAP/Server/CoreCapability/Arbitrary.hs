@@ -5,7 +5,7 @@ module JMAP.Server.CoreCapability.Arbitrary () where
 import           Data.Text.Arbitrary ()
 import           Generic.Random
 import           JMAP.Server.CoreCapability
-import           JMAP.Types.Base.Arbitrary ()
+import           JMAP.Types.Arbitrary ()
 import           Test.QuickCheck
 
 instance Arbitrary CoreCapability where

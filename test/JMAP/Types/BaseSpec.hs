@@ -9,8 +9,8 @@ import qualified Data.Aeson.Key as AK
 import qualified Data.Aeson.Types as AT
 import qualified Data.Text as T
 import qualified Data.Vector as V
+import           JMAP.Types.Arbitrary ()
 import           JMAP.Types.Base
-import           JMAP.Types.Base.Arbitrary ()
 import           Test.Hspec
 import           Test.Hspec.QuickCheck
 import           Test.QuickCheck hiding (isSuccess)
@@ -19,6 +19,8 @@ spec :: Spec
 spec = do
   describe "Id" $ do
     context "FromJSON" $ do
+      prop "round trips" $ \(a :: Id)
+        -> A.eitherDecode (A.encode a) === Right a
       it "rejects empty strings" $ do
         let r = A.fromJSON (A.String "") :: A.Result Id
         r `shouldNotSatisfy` isSuccess
@@ -35,6 +37,10 @@ spec = do
         let r4 = A.fromJSON (A.String "a lot") :: A.Result Id
         r4 `shouldNotSatisfy` isSuccess
     context "FromJSONKey" $ do
+      prop "round trips" $ \(a :: Id)
+        -> let A.ToJSONKeyText f _ = A.toJSONKey
+               A.FromJSONKeyTextParser g = A.fromJSONKey
+           in AT.parse g (AK.toText $ f a) === A.Success a
       it "rejects empty strings" $ do
         let A.FromJSONKeyTextParser f = A.fromJSONKey
             r = AT.parse f "" :: A.Result Id
@@ -54,21 +60,14 @@ spec = do
         let r4 = AT.parse f "S P A A A A C E" :: A.Result Id
         r4 `shouldNotSatisfy` isSuccess
     context "ToJSON" $ do
-      prop "round trips" $ \(a :: Id)
-        -> A.decode (A.encode a) === Just a
       it "encodes to a JSON String" $ do
         a <- generate (arbitrary :: Gen Id)
         A.toJSON a `shouldSatisfy` isString
     context "ToJSONKey" $ do
-      prop "round trips" $ \(a :: Id)
-        -> let A.ToJSONKeyText f _ = A.toJSONKey
-               A.FromJSONKeyTextParser g = A.fromJSONKey
-           in AT.parse g (AK.toText $ f a) === A.Success a
       it "encodes in a text-like way" $ do
         a <- generate (arbitrary :: Gen Id)
         let A.ToJSONKeyText f _ = A.toJSONKey
         AK.toText (f a) `shouldBe` fromId a
-
 
   describe "UInt" $ do
     context "Bounded" $ do
@@ -77,6 +76,8 @@ spec = do
       it "has correct upper bound" $ do
         fromUInt maxBound `shouldBe` (9007199254740989 :: Integer)
     context "FromJSON" $ do
+      prop "round trips" $ \(a :: UInt)
+        -> A.eitherDecode (A.encode a) === Right a
       it "rejects negative numbers" $ do
         let r = A.fromJSON (A.Number (-1)) :: A.Result UInt
         r `shouldNotSatisfy` isSuccess
@@ -84,16 +85,15 @@ spec = do
         let r = A.fromJSON (A.Number 9007199254740990) :: A.Result UInt
         r `shouldNotSatisfy` isSuccess
     context "ToJSON" $ do
-      prop "roundtrips" $ \(a :: UInt)
-        -> A.decode (A.encode a) === Just a
       it "encodes to a JSON Number" $ do
         a <- generate (arbitrary :: Gen UInt)
         A.toJSON a `shouldSatisfy` isNumber
 
   describe "Invocation" $ do
-    context "ToJSON" $ do
+    context "FromJSON" $ do
       prop "round trips" $ \(a :: Invocation)
-        -> A.decode (A.encode a) === Just a
+        -> A.eitherDecode (A.encode a) === Right a
+    context "ToJSON" $ do
       it "encodes as a 3-element JSON Array" $ do
         a <- generate arbitrary
         let A.Array v = A.toJSON a

@@ -29,6 +29,7 @@ library
   exposed-modules:
       JMAP.Server.CoreCapability
       JMAP.Types.Base
+      JMAP.Types.Error
       JMAP.Types.Request
       JMAP.Types.Response
       JMAP.Types.Session
@@ -42,6 +43,7 @@ library
     , base >=4.7 && <5
     , data-default-class
     , hashable
+    , http-rfc7807
     , refined
     , text
     , unordered-containers
@@ -54,13 +56,11 @@ test-suite jmap-test
   other-modules:
       JMAP.Server.CoreCapability.Arbitrary
       JMAP.Server.CoreCapabilitySpec
-      JMAP.Types.Base.Arbitrary
+      JMAP.Types.Arbitrary
       JMAP.Types.BaseSpec
-      JMAP.Types.Request.Arbitrary
+      JMAP.Types.ErrorSpec
       JMAP.Types.RequestSpec
-      JMAP.Types.Response.Arbitrary
       JMAP.Types.ResponseSpec
-      JMAP.Types.Session.Arbitrary
       JMAP.Types.SessionSpec
       Paths_jmap
   hs-source-dirs:
@@ -73,6 +73,7 @@ test-suite jmap-test
     , generic-random
     , ghc
     , hspec
+    , http-rfc7807
     , jmap
     , quickcheck-instances
     , quickcheck-text

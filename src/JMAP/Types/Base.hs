@@ -8,13 +8,14 @@
 {-# LANGUAGE TypeOperators #-}
 
 module JMAP.Types.Base
-  ( Id(..)
+  ( Collation
+  , Id(..)
   , fromId
+  , Invocation(..)
+  , Limit
   , UInt(..)
   , fromUInt
-  , Collation
   , URI
-  , Invocation(..)
   ) where
 
 import qualified Data.Aeson as A
@@ -46,7 +47,7 @@ isSafeChar :: Char -> Bool
 isSafeChar c = c == '-' || c == '_' || (C.isAscii c && C.isAlphaNum c)
 
 
--- | The Id type defined in Section 1.2. All record ids are assigned
+-- | The 'Id' type defined in Section 1.2. All record ids are assigned
 -- by the server and are immutable.
 --
 -- Where "Id" is given as a data type, it means a "String" of at least
@@ -140,6 +141,12 @@ instance A.FromJSON Invocation where
     <*> parseIndex v 1
     <*> parseIndex v 2
 
+-- | Helper: extract 'A.Value' at a given index.
+parseIndex :: A.FromJSON a => A.Array -> Int -> AT.Parser a
+parseIndex v i = case V.indexM v i of
+  Nothing -> fail $ "index "<>show i<>" not found"
+  Just a -> A.parseJSON a A.<?> AT.Index i
+
 instance A.ToJSON Invocation where
   toJSON a = A.Array $ flip V.unfoldr (0 :: Natural) $ \i ->
     case i of
@@ -153,7 +160,7 @@ instance A.ToJSON Invocation where
     , A.toJSON $ method_call_id a
     ]
 
-parseIndex :: A.FromJSON a => A.Array -> Int -> AT.Parser a
-parseIndex v i = case V.indexM v i of
-  Nothing -> fail $ "index "<>show i<>" not found"
-  Just a -> A.parseJSON a A.<?> AT.Index i
+
+-- | Placeholder for referencing a service limit in an
+-- 'ErrorRepresentation'.
+type Limit = Refined NonEmpty Text

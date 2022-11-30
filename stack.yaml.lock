@@ -3,7 +3,18 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    commit: 2dcbe9173988d5e284984644d0bd9bcff1d9e83c
+    git: git@github.com:whittle/http-rfc7807.git
+    name: http-rfc7807
+    pantry-tree:
+      sha256: fc60e2634cf6764be03a2200be30c2c121975aa52a334c0f1545bd19fa32c72a
+      size: 876
+    version: 0.2.0.0
+  original:
+    commit: 2dcbe9173988d5e284984644d0bd9bcff1d9e83c
+    git: git@github.com:whittle/http-rfc7807.git
 snapshots:
 - completed:
     sha256: b73b2b116143aea728c70e65c3239188998bac5bc3be56465813dacd74215dc5

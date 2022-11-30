@@ -28,6 +28,7 @@ library:
   exposed-modules:
     - JMAP.Server.CoreCapability
     - JMAP.Types.Base
+    - JMAP.Types.Error
     - JMAP.Types.Request
     - JMAP.Types.Response
     - JMAP.Types.Session
@@ -36,6 +37,7 @@ library:
     - aeson
     - data-default-class
     - hashable
+    - http-rfc7807
     - refined
     - text
     - unordered-containers
@@ -56,6 +58,7 @@ tests:
       - generic-random
       - ghc
       - hspec
+      - http-rfc7807
       - QuickCheck
       - quickcheck-instances
       - quickcheck-text
